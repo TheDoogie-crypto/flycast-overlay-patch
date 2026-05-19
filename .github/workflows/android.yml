@@ -21,7 +21,8 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-
+      - name: Update submodules
+        run: git submodule update --init --recursive
       - uses: actions/setup-java@v5
         with:
           java-version: '17'
