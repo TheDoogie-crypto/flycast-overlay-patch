@@ -38,7 +38,7 @@ jobs:
           path: ~/.ccache
           key: android-ccache-${{ github.sha }}
           restore-keys: android-ccache-
-            
+
       - name: Disable release signing
         run: sed -i 's/signingConfigs.getByName("release")/signingConfigs.getByName("debug")/g' shell/android-studio/flycast/build.gradle.kts
         if: github.repository != 'flyinghead/flycast' || github.event_name != 'push'
@@ -101,7 +101,7 @@ jobs:
           project: minidump
           version: 2.21.2
         if: ${{ env.SENTRY_TOKEN != '' }}
-      
+
       - name: Upload symbols to Sentry
         run: |
           VERSION=$(git describe --tags --always)
