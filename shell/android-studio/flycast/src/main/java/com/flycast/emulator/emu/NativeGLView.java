@@ -57,37 +57,27 @@ public class NativeGLView extends SurfaceView implements SurfaceHolder.Callback 
 protected void onAttachedToWindow() {
     super.onAttachedToWindow();
 
-    boolean showTouchOverlay = true;
-    boolean autoHideTouchOverlay = true;
-
-    if (!showTouchOverlay)
-        return;
-
+    // Only show touch overlay if no gamepad is connected
     boolean gamepadConnected = false;
 
     int[] deviceIds = InputDevice.getDeviceIds();
-
     for (int id : deviceIds) {
         InputDevice device = InputDevice.getDevice(id);
-
         if (device == null)
             continue;
 
         int sources = device.getSources();
-
         if ((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD
-                ||
-            (sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK) {
+                || (sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK) {
             gamepadConnected = true;
             break;
         }
     }
 
-    if (autoHideTouchOverlay && gamepadConnected)
-        return;
-
-    if (InputDeviceManager.getInstance().hasTouchscreen())
+    if (!gamepadConnected
+            && InputDeviceManager.getInstance().hasTouchscreen()) {
         vjoyDelegate = new VirtualJoystickDelegate(this);
+    }
 }
 
     @Override
