@@ -8,9 +8,9 @@ on:
 
 jobs:
   build:
-    name: Android
-    runs-on: ubuntu-latest
-    steps:
+   name: Android
+   runs-on: ubuntu-latest
+   steps:
         - name: Set up build environment
           run: |
             sudo apt-get update
