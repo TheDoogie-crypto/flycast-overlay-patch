@@ -180,19 +180,39 @@ protected void onAttachedToWindow() {
             requestLayout();
         }
     }
+   public void setVGamepadEditMode(boolean editing)
+   {
+    if (!InputDeviceManager.getInstance().hasTouchscreen())
+        return;
 
-    public void setVGamepadEditMode(boolean editing)
-    {
-        if (!InputDeviceManager.getInstance().hasTouchscreen())
-            return;
-        if (editing && !(vjoyDelegate instanceof EditVirtualJoystickDelegate))
-            vjoyDelegate = new EditVirtualJoystickDelegate(this);
-        else if (!editing && !(vjoyDelegate instanceof VirtualJoystickDelegate))
-            vjoyDelegate = new VirtualJoystickDelegate(this);
+    boolean gamepadConnected = false;
+
+    int[] deviceIds = InputDevice.getDeviceIds();
+    for (int id : deviceIds) {
+        InputDevice device = InputDevice.getDevice(id);
+        if (device == null)
+            continue;
+
+        int sources = device.getSources();
+        if ((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD
+                || (sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK) {
+            gamepadConnected = true;
+            break;
+        }
     }
 
-    public void showVGamepad() {
-        if (vjoyDelegate != null)
-            vjoyDelegate.show();
+    if (editing && !(vjoyDelegate instanceof EditVirtualJoystickDelegate)) {
+        vjoyDelegate = new EditVirtualJoystickDelegate(this);
     }
+    else if (!editing
+            && !gamepadConnected
+            && !(vjoyDelegate instanceof VirtualJoystickDelegate)) {
+        vjoyDelegate = new VirtualJoystickDelegate(this);
+    }
+}
+
+public void showVGamepad() {
+    if (vjoyDelegate != null)
+        vjoyDelegate.show();
+}
 }
